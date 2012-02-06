@@ -1,0 +1,76 @@
+@(
+    episodes: List[(models.Episode, Boolean, String, String)]
+)(
+	implicit 
+	renderArgs: play.mvc.Scope.RenderArgs
+)
+
+@main(title="myTVListings") {
+	@navbar(Boolean.unbox(renderArgs.get("logged")), "My Episodes")
+	
+	<section id="content">
+		<div class="container">
+			<div class="row">
+				<div>
+					<h2>My Episodes</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span12">
+					<table class="table table-striped" id="sample">
+						<thead>
+							<tr>
+								<th>Air date</th>
+								<th>Show</th>
+								<th>Episode #</th>
+								<th>Episode title</th>
+								<th>Status</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							@episodes.map { tuple =>
+								<tr id="@(tuple._1.episodeid)">
+									<td>@tuple._3</td>
+									<td><a href="@action(controllers.Application.show(tuple._1.showid))" style="color: black;">
+										@tuple._4
+									</a></td>
+									<td>@(tuple._1.season)x@if(tuple._1.epNum < 10){0}@tuple._1.epNum</td>
+									<td>@tuple._1.title</td>
+									@if(tuple._2) {
+										<td><span class="label label-success">aired</span></td>
+									} else {
+										<td><span class="label label-warning">upcoming</span></td>
+									}
+									<td><a class="close" title="Remove from list"><i class="icon-ok"></i></a></td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<script type="text/javascript">	
+		$(document).ready($(function() {
+			$(".close").click(function(){
+				var row = $(this).parent().parent()
+				
+				$.ajax({
+					type: "POST",
+					url: "@action(controllers.Application.removeEpisode)",
+					data: {episodeid : row.attr("id")},
+					dataType: "html",
+					success: function() {
+						row.remove()
+					}
+				});
+				return false;
+			});
+		}));
+	</script>
+	
+	
+	@footer()
+}

@@ -1,0 +1,15 @@
+@(title:String = "")(body: => Html)
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>@title</title>
+        <link rel="stylesheet" href="@asset("public/bootstrap/css/bootstrap.min.css")">
+        <link rel="shortcut icon" type="image/png" href="@asset("public/images/favicon.png")">
+        <script type="text/javascript" src="@asset("public/bootstrap/js/bootstrap.min.js")"></script>
+        <script type="text/javascript" src="@asset("public/javascripts/jquery-1.6.4.min.js")"></script>
+    </head>
+    <body style="padding-top: 60px;">
+        @body
+    </body>
+</html>

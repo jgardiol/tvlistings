@@ -1,0 +1,32 @@
+@(
+    shows: List[models.Show]
+)(
+	implicit 
+	renderArgs: play.mvc.Scope.RenderArgs
+)
+
+@main(title="myTVListings") {
+	@navbar(Boolean.unbox(renderArgs.get("logged")), "All")
+	
+	<section id="content">
+		<div class="container">
+			<div class="row">
+				<div>
+					<h2>All shows</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div>
+					@showlist(shows)
+				</div>
+			</div>
+			<div class="row">
+				<div>
+					<p>More shows can be added through the search results</p>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	@footer()
+}

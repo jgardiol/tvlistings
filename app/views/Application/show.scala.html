@@ -1,0 +1,141 @@
+@(
+    show: models.Show,
+    episodes: List[(models.Episode, Boolean, String, Boolean)],
+    followed: Boolean
+)(
+	implicit 
+	renderArgs: play.mvc.Scope.RenderArgs
+)
+
+@main(title="myTVListings") {
+	@navbar(Boolean.unbox(renderArgs.get("logged")))
+	
+	<section id="content">
+		<div class="container">
+			<div class="row">
+				<div class="span8">
+					<h1>@show.name</h1>
+				</div>
+				
+				@if(Boolean.unbox(renderArgs.get("logged"))) {
+					<div class="span4">
+						@if(followed) {
+							<button class="btn btn-danger pull-right">Remove from my shows</button>
+						} else {
+							<button class="btn btn-success pull-right">Add to my shows</button>
+						}
+					</div>
+				}
+			</div>
+			
+			<div class="row">
+				<div class="span12">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Air date</th>
+								<th>Episode #</th>
+								<th>Episode title</th>
+								<th>Status</th>
+								<th>	</th>
+							</tr>
+						</thead>
+						<tbody>
+							@episodes.map { tuple =>
+							<tr id="@(tuple._1.episodeid)">
+								<td>@tuple._3</td>
+								<td>@(tuple._1.season)x@if(tuple._1.epNum < 10){0}@tuple._1.epNum</td>
+								<td>@tuple._1.title</td>
+								@if(tuple._2) {
+									<td><span class="label label-success">aired</span></td>
+								} else {
+									<td><span class="label label-warning">upcoming</span></td>
+								}
+								<td>
+								<!-- C'est foireux... -->
+								@if(Boolean.unbox(renderArgs.get("logged")) && followed) {
+									@if(tuple._4){
+										<a class="close" title="Add to watched episodes"><i class="icon-remove"></i></a>
+									} else {
+										<a class="close" title="Remove from watched episodes"><i class="icon-ok"></i></a>
+									}
+								}
+								</td>
+							</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	@footer()
+	
+	@if(Boolean.unbox(renderArgs.get("logged"))) {
+		<script type="text/javascript">	
+			$(document).ready($(function() {
+				$("button").click(function() {
+					var ajaxUrl
+					
+					if($("button").hasClass("btn-danger")) {
+						ajaxUrl = "@action(controllers.Application.removeShow)"
+					} else {
+						ajaxUrl = "@action(controllers.Application.addShow)"
+					}
+					
+				 	$.ajax({
+						type: "POST",
+						url: ajaxUrl,
+						data: {showid : @show.id},
+						dataType: "html",
+						success: function() {
+							if($("button").hasClass("btn-danger")) {
+								$("button").removeClass("btn-danger");
+								$("button").addClass("btn-success");
+								$("button").text("Add to my shows");
+							} else {
+								$("button").removeClass("btn-success");
+								$("button").addClass("btn-danger");
+								$("button").text("Remove from my shows");
+							}
+						}
+					});
+					return false;
+				});
+				
+				$("a.close").click(function() {
+						var ajaxUrl
+						var elem = $(this).children("i")
+						
+						if(elem.hasClass("icon-remove")) {
+							ajaxUrl = "@action(controllers.Application.removeEpisode)"
+						} else {
+							ajaxUrl = "@action(controllers.Application.addEpisode)"
+						}
+						
+						var id = $(this).parents("tr").attr("id")						
+						
+					 	$.ajax({
+							type: "POST",
+							url: ajaxUrl,
+							data: {episodeid : id},
+							dataType: "html",
+							success: function() {
+								if(elem.hasClass("icon-remove")) {
+									elem.removeClass("icon-remove");
+									elem.addClass("icon-ok");
+								} else {
+									elem.removeClass("icon-ok");
+									elem.addClass("icon-remove");
+								}
+							}
+						});
+						return false;
+				});				
+			}));
+			
+			
+		</script>
+	}
+}

@@ -1,0 +1,96 @@
+@(
+	randomId: String
+)(
+	implicit
+	renderArgs: play.mvc.Scope.RenderArgs,
+	params: play.mvc.Scope.Params,
+	errors:Map[String,play.data.validation.Error]
+)
+
+@main(title = "myTVListings") {
+	@navbar(Boolean.unbox(renderArgs.get("logged")), "Login")
+	
+	<section id="content">
+		<div class="container">
+			<div class="row">
+				<div class="offset4 span4">
+					<form action="@action(controllers.Application.login)" method="POST">
+						<fieldset>
+							<legend>Login</legend>
+							@if(errors && errors.head._1 == "login-failed") {
+						        <div class="alert">
+						        	<ul>
+						        		<li>@errors.head._2</li>
+						        	</ul>						          
+						        </div>
+						    }
+							<div class="control-group">
+								<label for="username">Username: </label>
+								<div class="controls">
+									<input class="span4" type="text" name="username" value="@params.get("username")"/>
+								</div>
+							</div>
+							<div class="control-group">
+								<label for="password">Password: </label>
+								<div class="input">
+									<input class="span4" type="password" name="password"/>
+								</div>				
+							</div>
+							<div class="form-actions">
+								<input class="btn btn-primary" type="submit" value="Login"/>
+							</div>
+						</fieldset>
+					</form>
+				</div>
+			</div>
+			<div class="row">
+				<div class="offset4 span4">				
+					<form action="@action(controllers.Application.createAccount)" method="POST" class="form-stacked">
+						<fieldset>
+							<legend>Create account</legend>
+							@if(errors && !(errors.head._1 == "login-failed")) {
+								<div class="alert"><ul>
+								@errors.map { error =>
+									<li>@error._2</li>
+								}
+								</ul></div>
+						    }
+							<div class="control-group @if(errors && !(errors.head._1 == "login-failed")){error}">
+								<label for="username">Username: </label>
+								<div class="input">
+									<input class="span4" type="text" name="username" value="@params.get("username")"/>
+								</div>
+							</div>
+							<div class="control-group @if(errors && !(errors.head._1 == "login-failed")){error}">
+								<label for="password">Password: </label>
+								<div class="input">
+									<input class="span4" type="password" name="password"/>
+								</div>				
+							</div>
+							<div class="control-group @if(errors && !(errors.head._1 == "login-failed")){error}">
+								<label for="password2">Confirm Password: </label>
+								<div class="input">
+									<input class="span4" type="password" name="password2"/>
+								</div>				
+							</div>
+							<div class="control-group @if(errors && !(errors.head._1 == "login-failed")){error}">
+								<label for="code">Please type the code below: </label>
+								<img src="@action(controllers.Application.captcha(randomId))" alt="captcha"/>
+								<br/>
+								<div class="input">
+									<input type="text" name="code" id="code" size="18" value=""/>
+								</div>
+								<input type="hidden" name="randomID" value="@randomId"/>
+							</div>
+							<div class="form-actions">
+								<input class="btn btn-primary" type="submit" value="Sign up"/>
+							</div>			
+						</fieldset>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	@footer()
+}

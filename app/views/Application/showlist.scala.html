@@ -1,0 +1,15 @@
+@(shows: List[models.Show])
+
+@if(!shows.isEmpty) {
+	<ul>
+		@shows.map { show =>
+			<li><a href="@action(controllers.Application.show(show.id))">@show.name</a></li>
+			
+		}
+		
+		<!-- <i class="icon-plus"></i><i class="icon-minus"></i> -->
+	</ul>
+} else {
+	<p>No results</p>
+}
+	

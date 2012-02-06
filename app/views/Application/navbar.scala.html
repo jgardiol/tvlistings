@@ -1,0 +1,36 @@
+@(logged: Boolean, active: String = "")
+
+@isActive(menu: String) = {
+	@if(menu == active) {
+		class="active"
+	}
+}
+
+<section id="navigation">
+	<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="@action(controllers.Application.index)">
+					myTVListings
+				</a>
+				<ul class="nav">
+					<li @isActive("Home")><a href="@action(controllers.Application.index)">Home</a></li>
+					<li @isActive("All")><a href="@action(controllers.Application.allShows)">All shows</a></li>
+				</ul>
+				<form class="navbar-search pull-left" action="@action(controllers.Application.search)" method="GET">
+					<input type="text" name="searchstring" placeholder="Search a show..."/>
+				</form>
+				<ul class="nav pull-right">
+					@if(logged) {
+						<li @isActive("My Shows")><a href="@action(controllers.Application.myShows)">My Shows</a></li>
+						<li @isActive("My Episodes")><a href="@action(controllers.Application.myEpisodes)">My Episodes</a></li>
+						<li class="divider"></li>
+						<li><a href="@action(controllers.Application.logout)">Logout</a></li>
+					} else {
+						<li @isActive("Login")><a href="@action(controllers.Application.loginPage)">Login</a></li>
+					}
+				</ul>
+			</div>
+		</div>
+	</div>
+</section>

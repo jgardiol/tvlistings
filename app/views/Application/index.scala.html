@@ -1,0 +1,24 @@
+@(
+    
+)(
+	implicit 
+	renderArgs: play.mvc.Scope.RenderArgs
+)
+
+@main(title = "myTVListings") {
+	@navbar(Boolean.unbox(renderArgs.get("logged")), "Home")
+	
+	<section id="content">
+		<div class="container">
+			<div class="row">
+				<div class="span12">
+					<p>
+					Content will be added here sometime...
+					</p>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	@footer()
+}
