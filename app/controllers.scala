@@ -97,7 +97,7 @@ object Application extends Controller {
 		} else {
 			User.create(username, password) match {
 				case Some(user) => {
-					session.put("username", username)
+					session += "username" -> user.username
 					Action(allShows)
 				}
 				case None => {
@@ -113,17 +113,15 @@ object Application extends Controller {
 		Validation.clear()
 		val username = params.get("username")
 		val password = params.get("password")
-		val user = User.authenticate(username, password)
 
-		user match {
+		User.authenticate(username, password) match {
 			case None => {
 				Validation.addError("login-failed", "Login failed...")
 				Validation.keep()
 				Action(loginPage)
 			}
-			case _ => {
-				session += "username" -> username
-				response.setCookie("awesome_cookie", Crypto.sign("username"), "30d")
+			case Some(user) => {
+				session += "username" -> user.username
 				Action(myEpisodes)
 			}
 		}
