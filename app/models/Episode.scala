@@ -77,8 +77,8 @@ object Episode {
 	}
 
 	def isCurrentEpisode(ep: Episode): Boolean = {
-		val before = DateTime.now().minusWeeks(2)
-		val after = DateTime.now().plusWeeks(2)
+		val before = DateTime.now().minusWeeks(4)
+		val after = DateTime.now().plusWeeks(4)
 
 		ep.airDate.isAfter(before) && ep.airDate.isBefore(after)
 	}
