@@ -43,19 +43,21 @@ object User {
 	val formatter = DateTimeFormat.forPattern("yyyy-MM-dd")
 
 	def create(username: String, password: String): Option[User] = {
+		val name = username.toLowerCase
 		val hash = Crypto.passwordHash(password, Crypto.HashType.SHA256)
-		Queries.getUserByName(username) match {
+		Queries.getUserByName(name) match {
 			case Some(_) => None
-			case None => Queries.addUser(username, hash)
-						 Queries.getUserByName(username) map { user => User(user._1, user._2)}
+			case None => Queries.addUser(name, hash)
+						 Queries.getUserByName(name) map { user => User(user._1, user._2)}
 		}
 	}
 
 	def authenticate(username: String, password: String): Option[User] = {
+		val name = username.toLowerCase
 		val hash = Crypto.passwordHash(password, Crypto.HashType.SHA256)
 		
-		Queries.getUserByName(username) match {
-			case Some((id,_,h)) if h == hash => Some(User(id, username))
+		Queries.getUserByName(name) match {
+			case Some((id,_,h)) if h == hash => Some(User(id, name))
 			case _ => None
 		}
 	}
