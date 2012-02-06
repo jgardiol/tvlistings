@@ -15,6 +15,7 @@
 			<div class="row">
 				<div class="span8">
 					<h1>@show.name</h1>
+					<br/>
 				</div>
 				
 				@if(Boolean.unbox(renderArgs.get("logged"))) {
@@ -27,21 +28,23 @@
 					</div>
 				}
 			</div>
-			
 			<div class="row">
 				<div class="span12">
+					@episodes.groupBy({_._1.season}).toList.sortBy(_._1).map { season =>
+					<h3>Season @season._1</h3>
+				
 					<table class="table table-striped">
 						<thead>
 							<tr>
-								<th>Air date</th>
-								<th>Episode #</th>
-								<th>Episode title</th>
-								<th>Status</th>
-								<th>	</th>
+								<th style="width: 175px">Air date</th>
+								<th style="width: 150px">Episode #</th>
+								<th style="width: 475px">Episode title</th>
+								<th style="width: 105px">Status</th>
+								<th style="width: 35px"></th>
 							</tr>
 						</thead>
 						<tbody>
-							@episodes.map { tuple =>
+							@season._2.map { tuple =>
 							<tr id="@(tuple._1.episodeid)">
 								<td>@tuple._3</td>
 								<td>@(tuple._1.season)x@if(tuple._1.epNum < 10){0}@tuple._1.epNum</td>
@@ -62,6 +65,7 @@
 							}
 						</tbody>
 					</table>
+					}
 				</div>
 			</div>
 		</div>
