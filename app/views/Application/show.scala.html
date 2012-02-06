@@ -33,7 +33,7 @@
 					@episodes.groupBy({_._1.season}).toList.sortBy(_._1).map { season =>
 					<h3>Season @season._1</h3>
 				
-					<table class="table table-striped">
+					<table class="table table-striped" style="table-layout: fixed;">
 						<thead>
 							<tr>
 								<th style="width: 175px">Air date</th>
