@@ -52,11 +52,8 @@
 									<td><span class="label label-warning">upcoming</span></td>
 								}
 								<td>
-								<!-- C'est foireux... -->
 								@if(Boolean.unbox(renderArgs.get("logged")) && followed) {
-									@if(tuple._4){
-										<a class="close" title="Add to watched episodes"><i class="icon-remove"></i></a>
-									} else {
+									@if(!tuple._4){
 										<a class="close" title="Remove from watched episodes"><i class="icon-ok"></i></a>
 									}
 								}
@@ -105,37 +102,21 @@
 				});
 				
 				$("a.close").click(function() {
-						var ajaxUrl
-						var elem = $(this).children("i")
-						
-						if(elem.hasClass("icon-remove")) {
-							ajaxUrl = "@action(controllers.Application.removeEpisode)"
-						} else {
-							ajaxUrl = "@action(controllers.Application.addEpisode)"
+					var elem = $(this)
+					var id = $(this).parents("tr").attr("id");
+					
+				 	$.ajax({
+						type: "POST",
+						url: "@action(controllers.Application.addEpisode)",
+						data: {episodeid : id},
+						dataType: "html",
+						success: function() {
+							elem.remove();
 						}
-						
-						var id = $(this).parents("tr").attr("id")						
-						
-					 	$.ajax({
-							type: "POST",
-							url: ajaxUrl,
-							data: {episodeid : id},
-							dataType: "html",
-							success: function() {
-								if(elem.hasClass("icon-remove")) {
-									elem.removeClass("icon-remove");
-									elem.addClass("icon-ok");
-								} else {
-									elem.removeClass("icon-ok");
-									elem.addClass("icon-remove");
-								}
-							}
-						});
-						return false;
-				});				
-			}));
-			
-			
+					});
+					return false;
+				});
+			}));			
 		</script>
 	}
 }
