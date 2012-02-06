@@ -1,1 +1,0 @@
-web: play run $PLAY_OPTS

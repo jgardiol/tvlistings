@@ -1,6 +1,3 @@
-tmp/
-eclipse/
-modules/
-.project
-.classpath
-.settings/
+lib/
+conf/
+test/
