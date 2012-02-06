@@ -123,6 +123,7 @@ object Application extends Controller {
 			}
 			case _ => {
 				session += "username" -> username
+				response.setCookie("awesome_cookie", Crypto.sign("username"), "30d")
 				Action(myEpisodes)
 			}
 		}
